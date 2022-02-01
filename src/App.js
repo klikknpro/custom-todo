@@ -1,31 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 
-const blogPosts = [
-  {
-    title: "title1",
-    content: "content1",
-    date: "date1",
-  },
-  {
-    title: "title2",
-    content: "content2",
-    date: "date2",
-  },
-  {
-    title: "title3",
-    content: "content3",
-    date: "date3",
-  },
-];
+// const sampleData = [
+//   {
+//     title: "title1",
+//     content: "content1",
+//     date: "date1",
+//   },
+//   {
+//     title: "title2",
+//     content: "content2",
+//     date: "date2",
+//   },
+//   {
+//     title: "title3",
+//     content: "content3",
+//     date: "date3",
+//   },
+// ];
 
 function App() {
+  const [blogPosts, setBlogPosts] = useState([]);
+
+  const addBlogPost = () => {
+    setBlogPosts([...blogPosts, { title: "this" }]);
+  };
+
   return (
     <div className="App">
       <div className="editor">
         <input type="text" placeholder="title" />
         <input type="text" placeholder="content" />
-        <button>Post it</button>
+        <button onClick={addBlogPost}>Post it</button>
       </div>
       <h1>Posts</h1>
       <div className="articles">
