@@ -1,36 +1,62 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-// const sampleData = [
-//   {
-//     title: "title1",
-//     content: "content1",
-//     date: "date1",
-//   },
-//   {
-//     title: "title2",
-//     content: "content2",
-//     date: "date2",
-//   },
-//   {
-//     title: "title3",
-//     content: "content3",
-//     date: "date3",
-//   },
-// ];
-
 function App() {
   const [blogPosts, setBlogPosts] = useState([]);
+  const [titleValue, setTitleValue] = useState("");
+  const [contentValue, setContentValue] = useState("");
+  const [editValue, setEditValue] = useState("");
+
+  const titleInput = (e) => {
+    setTitleValue(e.target.value);
+  };
+
+  const contentInput = (e) => {
+    setContentValue(e.target.value);
+  };
+
+  const editPost = (e) => {
+    setEditValue(e.target.value);
+  };
+
+  const actualDate = new Date().toString();
 
   const addBlogPost = () => {
-    setBlogPosts([...blogPosts, { title: "this" }]);
+    setBlogPosts([...blogPosts, { title: titleValue, content: contentValue, date: actualDate }]);
+    setTitleValue("");
+    setContentValue("");
+  };
+
+  const deleteAllPosts = () => {
+    setBlogPosts([]);
+  };
+
+  const removeBlogPost = (date) => {
+    const list = blogPosts.filter((post) => post.date !== date);
+    // const list = [];
+    // for (let post of blogPosts) {
+    //   if (post.date !== date) {
+    //     list.push(post);
+    //   }
+    // }
+    setBlogPosts(list);
+  };
+
+  const saveBlogPost = (date) => {
+    const list = blogPosts.map((post) => {
+      if (post.date === date) {
+        post.content = editValue;
+      }
+      return post;
+    });
+    setBlogPosts(list);
   };
 
   return (
     <div className="App">
       <div className="editor">
-        <input type="text" placeholder="title" />
-        <input type="text" placeholder="content" />
+        <input type="text" placeholder="title" value={titleValue} onChange={titleInput} />
+        <input type="text" placeholder="content" value={contentValue} onChange={contentInput} />
         <button onClick={addBlogPost}>Post it</button>
       </div>
       <h1>Posts</h1>
@@ -40,15 +66,26 @@ function App() {
             <h2>{blogPost.title}</h2>
             <p>{blogPost.content}</p>
             <h6>{blogPost.date}</h6>
-            <input type="text" placeholder="edit this post" />
-            <button>Edit</button>
-            <button>Save</button>
-            <button>Remove</button>
+            <input type="text" value={editValue} onChange={editPost} placeholder="edit this post" />
+            <button onClick={() => saveBlogPost(blogPost.date)}>Save</button>
+            <button onClick={() => removeBlogPost(blogPost.date)}>Remove</button>
           </article>
         ))}
       </div>
+      <button onClick={deleteAllPosts}>Delete All</button>
     </div>
   );
 }
 
 export default App;
+
+/*
+if (post.date === date) {
+        const updatedItem = {
+          ...post,
+          content: editValue,
+        };
+        return updatedItem;
+      }
+      return post;
+*/
