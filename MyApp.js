@@ -6,7 +6,6 @@ function App() {
   const [titleValue, setTitleValue] = useState("");
   const [contentValue, setContentValue] = useState("");
   const [editContentValue, setEditContentValue] = useState("");
-  const [editTitleValue, setEditTitleValue] = useState("");
 
   const titleInput = (e) => {
     setTitleValue(e.target.value);
@@ -18,10 +17,6 @@ function App() {
 
   const editContent = (e) => {
     setEditContentValue(e.target.value);
-  };
-
-  const editTitle = (e) => {
-    setEditTitleValue(e.target.value);
   };
 
   const actualDate = new Date().toString();
@@ -38,40 +33,23 @@ function App() {
 
   const removeBlogPost = (date) => {
     const list = blogPosts.filter((post) => post.date !== date);
+    // const list = [];
+    // for (let post of blogPosts) {
+    //   if (post.date !== date) {
+    //     list.push(post);
+    //   }
+    // }
     setBlogPosts(list);
   };
 
-  const saveBlogPost = (date) => {};
-
-  const editBlogPost = (date) => {
-    const list = [];
-    for (const post of blogPosts) {
-      if (post.date !== date) {
-        list.push(post);
-      } else {
-        list.push({
-          title: editTitleValue,
-          content: editContentValue,
-          date: post.date,
-        });
+  const saveBlogPost = (date) => {
+    const list = blogPosts.map((post) => {
+      if (post.date === date) {
+        post.content = editContentValue;
       }
-    }
+      return post;
+    });
     setBlogPosts(list);
-  };
-
-  const BlogPost = ({ blogPost }) => {
-    return (
-      <article>
-        <h2>{blogPost.title}</h2>
-        <p>{blogPost.content}</p>
-        <h6>{blogPost.date}</h6>
-        <input type="text" value={editContentValue} onChange={editContent} placeholder="edit this post's content" />
-        <input type="text" value={editTitleValue} onChange={editTitle} placeholder="edit this post's title" />
-        <button onClick={() => editBlogPost(blogPost.date)}>Edit</button>
-        <button onClick={() => saveBlogPost(blogPost.date)}>Save</button>
-        <button onClick={() => removeBlogPost(blogPost.date)}>Remove</button>
-      </article>
-    );
   };
 
   return (
@@ -84,7 +62,14 @@ function App() {
       <h1>Posts</h1>
       <div className="articles">
         {blogPosts.map((blogPost, index) => (
-          <BlogPost key={index} blogPost={blogPost} />
+          <article key={index}>
+            <h2>{blogPost.title}</h2>
+            <p>{blogPost.content}</p>
+            <h6>{blogPost.date}</h6>
+            <input type="text" value={editContentValue} onChange={editContent} placeholder="edit this post" />
+            <button onClick={() => saveBlogPost(blogPost.date)}>Save</button>
+            <button onClick={() => removeBlogPost(blogPost.date)}>Remove</button>
+          </article>
         ))}
       </div>
       <button onClick={deleteAllPosts}>Delete All</button>
