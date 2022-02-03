@@ -1,20 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-function App() {
-  const [blogPosts, setBlogPosts] = useState([]);
-  const [titleValue, setTitleValue] = useState("");
-  const [contentValue, setContentValue] = useState("");
+const BlogPost = ({ blogPost, editBlogPost, removeBlogPost }) => {
   const [editContentValue, setEditContentValue] = useState("");
   const [editTitleValue, setEditTitleValue] = useState("");
-
-  const titleInput = (e) => {
-    setTitleValue(e.target.value);
-  };
-
-  const contentInput = (e) => {
-    setContentValue(e.target.value);
-  };
 
   const editContent = (e) => {
     setEditContentValue(e.target.value);
@@ -22,6 +11,32 @@ function App() {
 
   const editTitle = (e) => {
     setEditTitleValue(e.target.value);
+  };
+
+  return (
+    <article>
+      <h2>{blogPost.title}</h2>
+      <p>{blogPost.content}</p>
+      <h6>{blogPost.date}</h6>
+      <input type="text" value={editContentValue} onChange={editContent} placeholder="edit this post's content" />
+      <input type="text" value={editTitleValue} onChange={editTitle} placeholder="edit this post's title" />
+      <button onClick={() => editBlogPost(blogPost.date, editTitleValue, editContentValue)}>Edit</button>
+      <button onClick={() => removeBlogPost(blogPost.date)}>Remove</button>
+    </article>
+  );
+};
+
+function App() {
+  const [blogPosts, setBlogPosts] = useState([]);
+  const [titleValue, setTitleValue] = useState("");
+  const [contentValue, setContentValue] = useState("");
+
+  const titleInput = (e) => {
+    setTitleValue(e.target.value);
+  };
+
+  const contentInput = (e) => {
+    setContentValue(e.target.value);
   };
 
   const actualDate = new Date().toString();
@@ -41,9 +56,7 @@ function App() {
     setBlogPosts(list);
   };
 
-  const saveBlogPost = (date) => {};
-
-  const editBlogPost = (date) => {
+  const editBlogPost = (date, editTitleValue, editContentValue) => {
     const list = [];
     for (const post of blogPosts) {
       if (post.date !== date) {
@@ -59,21 +72,6 @@ function App() {
     setBlogPosts(list);
   };
 
-  const BlogPost = ({ blogPost }) => {
-    return (
-      <article>
-        <h2>{blogPost.title}</h2>
-        <p>{blogPost.content}</p>
-        <h6>{blogPost.date}</h6>
-        <input type="text" value={editContentValue} onChange={editContent} placeholder="edit this post's content" />
-        <input type="text" value={editTitleValue} onChange={editTitle} placeholder="edit this post's title" />
-        <button onClick={() => editBlogPost(blogPost.date)}>Edit</button>
-        <button onClick={() => saveBlogPost(blogPost.date)}>Save</button>
-        <button onClick={() => removeBlogPost(blogPost.date)}>Remove</button>
-      </article>
-    );
-  };
-
   return (
     <div className="App">
       <div className="editor">
@@ -84,7 +82,7 @@ function App() {
       <h1>Posts</h1>
       <div className="articles">
         {blogPosts.map((blogPost, index) => (
-          <BlogPost key={index} blogPost={blogPost} />
+          <BlogPost key={index} blogPost={blogPost} editBlogPost={editBlogPost} removeBlogPost={removeBlogPost} />
         ))}
       </div>
       <button onClick={deleteAllPosts}>Delete All</button>
